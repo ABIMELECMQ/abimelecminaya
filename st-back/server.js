@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
-//const clientesRoutes = require("./routes/clientesRoutes");
+const clientesRoutes = require("./routes/clienteRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//app.use("/api/clientes", clientesRoutes);
+app.use("/api/clientes", clientesRoutes);
 
 app.get("/", (req, res) => {
   res.json({
