@@ -1,0 +1,27 @@
+<input
+  type="text"
+  [(ngModel)]="textoBusqueda"
+  (keyup)="buscarClientes()"
+  placeholder="Buscar cliente por dni , o nombre"
+/>
+
+
+<hr />
+
+<div *ngFor="let cliente of clientes">
+  <h3>
+    {{ cliente.nombres }} {{ cliente.apellidos }}
+    <small>({{ cliente.dni }})</small>
+  </h3>
+
+  <p>{{ cliente.telefono }} - {{ cliente.direccion }}</p>
+
+  <strong>Impresoras:</strong>
+  <ul>
+    <li *ngFor="let imp of cliente.impresoras">
+      {{ imp.marca }} - {{ imp.modelo }} ({{ imp.serie }})
+    </li>
+  </ul>
+
+  <hr />
+</div>

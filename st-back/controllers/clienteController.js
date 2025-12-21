@@ -130,7 +130,7 @@ const eliminarCliente = async (req, res) => {
   }
 };
 
-//------------------------------buscarClientesPor-----------------------------
+//------------------------------buscarClientesPorCoincidencia-----------------------------
 
 const buscarClientesPorCoincidencia = async (req, res) => {
   try {
@@ -171,10 +171,80 @@ const buscarClientesPorCoincidencia = async (req, res) => {
   }
 };
 
+//-------------------------------buscar clientes por coincidencia y listar todas las impresoras que tiene este cliente-----------------------
+const buscarClientesConImpresoras = async (req, res) => {
+  try {
+    const { texto } = req.query;
+
+    const sql = `
+      SELECT 
+        c.id AS cliente_id,
+        c.dni,
+        c.nombres,
+        c.apellidos,
+        c.telefono,
+        c.direccion,
+        i.id AS impresora_id,
+        i.marca,
+        i.modelo,
+        i.serie
+      FROM cliente c
+      LEFT JOIN impresora i ON c.id = i.cliente_id
+      WHERE c.dni LIKE ?
+         OR c.nombres LIKE ?
+         OR c.apellidos LIKE ?
+      ORDER BY c.id
+    `;
+
+    const [rows] = await db.query(sql, [
+      `%${texto}%`,
+      `%${texto}%`,
+      `%${texto}%`,
+    ]);
+
+    // 🔹 Agrupar
+    const clientesMap = {};
+
+    rows.forEach((row) => {
+      if (!clientesMap[row.cliente_id]) {
+        clientesMap[row.cliente_id] = {
+          id: row.cliente_id,
+          dni: row.dni,
+          nombres: row.nombres,
+          apellidos: row.apellidos,
+          telefono: row.telefono,
+          direccion: row.direccion,
+          impresoras: [],
+        };
+      }
+
+      if (row.impresora_id) {
+        clientesMap[row.cliente_id].impresoras.push({
+          id: row.impresora_id,
+          marca: row.marca,
+          modelo: row.modelo,
+          serie: row.serie,
+        });
+      }
+    });
+
+    res.json({
+      success: true,
+      data: Object.values(clientesMap),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   listarClientes,
   crearCliente,
   actualizarCliente,
   eliminarCliente,
   buscarClientesPorCoincidencia,
+  buscarClientesConImpresoras,
 };
