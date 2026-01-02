@@ -2,22 +2,25 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
-const clientesRoutes = require("./routes/clienteRoutes");
+const clientesRoutes = require("./routes/clienteRoutes"); // Rutas de clientes
+const tecnicoRoutes = require("./routes/tecnicoRoutes"); // Rutas de técnicos
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/usuarios", require("./routes/usuarioRoutes"));
-app.use("/api/impresoras", require("./routes/impresoraRoutes"));
+app.use("/api/auth", require("./routes/authRoutes")); // Rutas de autenticación
+app.use("/api/usuarios", require("./routes/usuarioRoutes")); // Rutas de usuarios
+app.use("/api/impresoras", require("./routes/impresoraRoutes")); // Rutas de impresoras
 
-app.use("/api/clientes", clientesRoutes);
+app.use("/api/tecnicos", tecnicoRoutes); // Rutas de técnicos
+
+app.use("/api/clientes", clientesRoutes); // Rutas de clientes
 
 app.get("/", (req, res) => {
   res.json({
-    mensaje: "API BIBLIOTECA - CRUD",
+    mensaje: "API de Servicio Técnico funcionando correctamente",
   });
 });
 
