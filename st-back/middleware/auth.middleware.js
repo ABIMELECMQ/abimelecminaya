@@ -10,19 +10,20 @@ const verificarToken = (req, res, next) => {
     });
   }
 
-  // Formato: Bearer TOKEN
   const token = authHeader.split(" ")[1];
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.usuario = decoded; // { id, rol }
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({
+        success: false,
+        mensaje: "Token inválido",
+      });
+    }
+
+    req.usuario = decoded;
     next();
-  } catch (error) {
-    return res.status(401).json({
-      success: false,
-      mensaje: "Token inválido o expirado",
-    });
-  }
+  });
 };
 
-module.exports = { verificarToken };
+// 🚨 ESTO ES CLAVE
+module.exports = verificarToken;

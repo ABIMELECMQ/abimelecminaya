@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const {
   listarClientes,
   crearCliente,
@@ -9,13 +10,27 @@ const {
   buscarClientesConImpresoras,
 } = require("../controllers/clienteController");
 
-//RUTAS CRUD
-//router.get("/:idcategoria", obtenerLibroPorIdCategoria); //probado
-router.get("/", listarClientes);
-router.post("/", crearCliente);
-router.put("/:id", actualizarCliente);
-router.delete("/:id", eliminarCliente);
-router.get("/buscar", buscarClientesPorCoincidencia); //http://localhost:3000/api/clientes/buscar?texto=45
-router.get("/buscar-con-impresoras", buscarClientesConImpresoras); //http://localhost:3000/api/clientes/buscar-con-impresoras?texto=45
+const verificarToken = require("../middleware/auth.middleware");
+const { soloAdmin, adminOTecnico } = require("../middleware/rol.middleware");
+
+// 🔒 LOGIN OBLIGATORIO
+router.get("/", verificarToken, listarClientes);
+
+// 🔒 ADMIN y TECNICO
+router.post("/", verificarToken, adminOTecnico, crearCliente);
+
+router.put("/:id", verificarToken, adminOTecnico, actualizarCliente);
+
+// 🔒 SOLO ADMIN
+router.delete("/:id", verificarToken, soloAdmin, eliminarCliente);
+
+// 🔍 BÚSQUEDAS
+router.get("/buscar", verificarToken, buscarClientesPorCoincidencia);
+
+router.get(
+  "/buscar-con-impresoras",
+  verificarToken,
+  buscarClientesConImpresoras
+);
 
 module.exports = router;
