@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './cliente-list.component.html',
-  styleUrl: './cliente-list.component.css'
+  styleUrls: ['./cliente-list.component.css'] // ✅ CORRECTO
 })
 export class ClienteListComponent implements OnInit {
 
@@ -24,12 +24,12 @@ export class ClienteListComponent implements OnInit {
 
   cargarClientes(): void {
     this.clienteService.listarClientes().subscribe({
-      next: (response) => {
+      next: (response: any) => {
         if (response.success) {
           this.clientes = response.data;
         }
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error al cargar los clientes:', error);
       }
     });
@@ -44,12 +44,12 @@ export class ClienteListComponent implements OnInit {
     this.clienteService
       .buscarClientesConImpresoras(this.textoBusqueda)
       .subscribe({
-        next: (response) => {
+        next: (response: any) => {
           if (response.success) {
             this.clientes = response.data;
           }
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error al buscar clientes:', error);
         }
       });

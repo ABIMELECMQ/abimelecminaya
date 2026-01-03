@@ -24,7 +24,7 @@ export class LoginComponent {
   login() {
     this.authService.login(this.nombre, this.password).subscribe({
       next: () => {
-        this.router.navigate(['/clientes']);
+        this.router.navigate(['/menu']);
       },
       error: () => {
         this.error = 'Usuario o contraseña incorrectos';

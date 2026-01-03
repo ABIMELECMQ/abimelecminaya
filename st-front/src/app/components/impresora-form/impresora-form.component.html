@@ -1,0 +1,34 @@
+<h2>Registrar Impresora</h2>
+
+<div *ngIf="error" style="color:red;">{{ error }}</div>
+
+<form (ngSubmit)="guardar()">
+
+  <div>
+    <label>Cliente:</label>
+    <select [(ngModel)]="cliente_id" name="cliente">
+      <option [value]="null">--Seleccione un cliente--</option>
+      <option *ngFor="let c of clientes" [value]="c.id">
+        {{ c.nombres }} {{ c.apellidos }}
+      </option>
+    </select>
+  </div>
+
+  <div>
+    <label>Marca:</label>
+    <input type="text" [(ngModel)]="marca" name="marca" />
+  </div>
+
+  <div>
+    <label>Modelo:</label>
+    <input type="text" [(ngModel)]="modelo" name="modelo" />
+  </div>
+
+  <div>
+    <label>Serie:</label>
+    <input type="text" [(ngModel)]="serie" name="serie" />
+  </div>
+
+  <button type="submit">Registrar Impresora</button>
+
+</form>

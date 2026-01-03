@@ -25,18 +25,35 @@ const crearCliente = async (req, res) => {
   try {
     const { dni, nombres, apellidos, telefono, direccion } = req.body;
 
+    // Validaciones básicas
     if (!dni || !nombres) {
       return res.status(400).json({
         success: false,
-        mensaje: "dni y nombres son obligatorios",
+        mensaje: "El DNI y los nombres son obligatorios",
       });
     }
 
+    // Verificar si el DNI ya existe
+    const [existe] = await db.query("SELECT id FROM cliente WHERE dni = ?", [
+      dni,
+    ]);
+
+    if (existe.length > 0) {
+      return res.status(400).json({
+        success: false,
+        mensaje: "El DNI ya está registrado",
+      });
+    }
+
+    // Insertar cliente
     const [resultado] = await db.query(
-      "INSERT INTO cliente (dni, nombres, apellidos, telefono, direccion) VALUES (?,?,?,?,?)",
+      `INSERT INTO cliente 
+       (dni, nombres, apellidos, telefono, direccion) 
+       VALUES (?, ?, ?, ?, ?)`,
       [dni, nombres, apellidos, telefono, direccion]
     );
 
+    // Respuesta exitosa
     res.status(201).json({
       success: true,
       mensaje: "Cliente creado correctamente",
@@ -48,10 +65,11 @@ const crearCliente = async (req, res) => {
       direccion,
     });
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
       success: false,
-      mensaje: "Error al crear cliente",
-      error: error.message,
+      mensaje: "Error interno del servidor",
     });
   }
 };

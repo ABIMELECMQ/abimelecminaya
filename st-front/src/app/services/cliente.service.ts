@@ -1,22 +1,42 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../environment/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ClienteResponse } from '../models/cliente.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClienteService {
 
-private apiUrl= `${environment.apiUrl}/clientes`;
-  constructor(private http: HttpClient) { }
+  private API_URL = 'http://localhost:3000/api/clientes';
 
-  listarClientes(): Observable<ClienteResponse> {
-    return this.http.get<ClienteResponse>(this.apiUrl); // Ajuste el tipo de retorno según la estructura de datos esperada
+  constructor(private http: HttpClient) {}
+
+  // 🔐 Headers con JWT
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
   }
 
-  buscarClientesConImpresoras(texto: string): Observable<ClienteResponse> {
-    return this.http.get<ClienteResponse>(`${this.apiUrl}/buscar-con-impresoras?texto=${texto}`);
-}
+  // 📋 LISTAR CLIENTES
+  listarClientes(): Observable<any> {
+    return this.http.get(this.API_URL, {
+      headers: this.getHeaders()
+    });
+  }
+
+  // 🔍 BUSCAR CLIENTES + IMPRESORAS
+  buscarClientesConImpresoras(texto: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/buscar/${texto}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  // ➕ CREAR CLIENTE (para el form)
+  crearCliente(data: any): Observable<any> {
+    return this.http.post(this.API_URL, data, {
+      headers: this.getHeaders()
+    });
+  }
 }
