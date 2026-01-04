@@ -1,0 +1,22 @@
+<h3>Buscar cliente</h3>
+
+<input
+  type="text"
+  [(ngModel)]="query"
+  placeholder="DNI, nombre o apellido"
+/>
+
+<button (click)="buscar()">Buscar</button>
+
+<p *ngIf="error" style="color:red">{{ error }}</p>
+
+<div *ngFor="let c of clientes" class="card">
+  <h4>{{ c.nombres }} {{ c.apellidos }} ({{ c.dni }})</h4>
+
+  <ul>
+    <li *ngFor="let i of c.impresoras">
+      {{ i.marca }} - {{ i.modelo }} | {{ i.serie }}
+      <button>Crear orden</button>
+    </li>
+  </ul>
+</div>

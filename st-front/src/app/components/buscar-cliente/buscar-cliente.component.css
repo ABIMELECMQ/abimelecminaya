@@ -1,0 +1,9 @@
+.cliente-card {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+}
+.error {
+  color: red;
+}

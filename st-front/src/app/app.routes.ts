@@ -6,10 +6,14 @@ import { MenuComponent } from './layout/menu/menu.component';
 import { ClienteListComponent } from './components/cliente-list/cliente-list.component';
 import { ClienteFormComponent } from './components/cliente-form/cliente-form.component';
 import { ImpresoraFormComponent } from './components/impresora-form/impresora-form.component';
+import { BuscarClienteComponent } from './components/buscar-cliente/buscar-cliente.component';
 
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
+
+ { path: 'buscar-cliente', component: BuscarClienteComponent },
+  { path: 'menu', component: MenuComponent },
 
   // 🔓 LOGIN (PÚBLICO)
   { path: 'login', component: LoginComponent },
