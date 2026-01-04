@@ -16,7 +16,10 @@
   <ul>
     <li *ngFor="let i of c.impresoras">
       {{ i.marca }} - {{ i.modelo }} | {{ i.serie }}
-      <button>Crear orden</button>
+      <button (click)="irACrearOrden(c.id, i.id)">
+  Crear orden
+</button>
+
     </li>
   </ul>
 </div>

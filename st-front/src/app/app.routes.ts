@@ -7,15 +7,13 @@ import { ClienteListComponent } from './components/cliente-list/cliente-list.com
 import { ClienteFormComponent } from './components/cliente-form/cliente-form.component';
 import { ImpresoraFormComponent } from './components/impresora-form/impresora-form.component';
 import { BuscarClienteComponent } from './components/buscar-cliente/buscar-cliente.component';
+import { OrdenFormComponent } from './components/orden-form/orden-form.component';
 
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
 
- { path: 'buscar-cliente', component: BuscarClienteComponent },
-  { path: 'menu', component: MenuComponent },
-
-  // 🔓 LOGIN (PÚBLICO)
+  // 🔓 LOGIN
   { path: 'login', component: LoginComponent },
 
   // 🔐 MENÚ PRINCIPAL
@@ -25,13 +23,20 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
 
+  // 🔐 BUSCAR CLIENTE
+  {
+    path: 'buscar-cliente',
+    component: BuscarClienteComponent,
+    canActivate: [authGuard]
+  },
+
   // 🔐 CLIENTES
   {
     path: 'clientes',
     canActivate: [authGuard],
     children: [
-      { path: '', component: ClienteListComponent },   // /clientes
-      { path: 'nuevo', component: ClienteFormComponent } // /clientes/nuevo ✅
+      { path: '', component: ClienteListComponent },
+      { path: 'nuevo', component: ClienteFormComponent }
     ]
   },
 
@@ -42,9 +47,17 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
 
+  // 🔐 CREAR ORDEN DE SERVICIO
+  {
+    path: 'orden/crear/:clienteId/:impresoraId',
+    component: OrdenFormComponent,
+    canActivate: [authGuard]
+  },
+
   // 🚪 REDIRECCIÓN INICIAL
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // 🚫 CUALQUIER OTRA RUTA
   { path: '**', redirectTo: 'login' }
+
 ];
