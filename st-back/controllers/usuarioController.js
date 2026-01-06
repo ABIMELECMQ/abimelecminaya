@@ -3,7 +3,9 @@ const bcrypt = require("bcryptjs");
 
 // LISTAR USUARIOS
 const listarUsuarios = async (req, res) => {
-  const [rows] = await db.query("SELECT id, usuario, rol FROM usuarios");
+  const [rows] = await db.query(
+    "SELECT id, nombre, password, rol, activo FROM usuario"
+  );
   res.json({
     success: true,
     data: rows,
@@ -12,13 +14,13 @@ const listarUsuarios = async (req, res) => {
 
 // CREAR USUARIO
 const crearUsuario = async (req, res) => {
-  const { usuario, password, rol } = req.body;
+  const { nombre, password, rol, activo } = req.body;
 
   const hash = await bcrypt.hash(password, 10);
 
   await db.query(
-    "INSERT INTO usuarios (usuario, password, rol) VALUES (?,?,?)",
-    [usuario, hash, rol]
+    "INSERT INTO usuario (nombre, password, rol, activo) VALUES (?,?,?,?)",
+    [nombre, hash, rol, activo ?? 1]
   );
 
   res.json({
@@ -30,13 +32,19 @@ const crearUsuario = async (req, res) => {
 // ACTUALIZAR USUARIO
 const actualizarUsuario = async (req, res) => {
   const { id } = req.params;
-  const { usuario, rol } = req.body;
+  const { nombre, password, rol, activo } = req.body;
 
-  await db.query("UPDATE usuarios SET usuario=?, rol=? WHERE id=?", [
-    usuario,
-    rol,
-    id,
-  ]);
+  let hash = password;
+
+  // 👉 Solo encripta si viene password nuevo
+  if (password) {
+    hash = await bcrypt.hash(password, 10);
+  }
+
+  await db.query(
+    "UPDATE usuario SET nombre=?, password=?, rol=?, activo=? WHERE id=?",
+    [nombre, hash, rol, activo, id]
+  );
 
   res.json({
     success: true,
@@ -48,7 +56,7 @@ const actualizarUsuario = async (req, res) => {
 const eliminarUsuario = async (req, res) => {
   const { id } = req.params;
 
-  await db.query("DELETE FROM usuarios WHERE id=?", [id]);
+  await db.query("DELETE FROM usuario WHERE id=?", [id]);
 
   res.json({
     success: true,

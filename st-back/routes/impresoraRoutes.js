@@ -6,10 +6,13 @@ const {
   crearImpresora,
   actualizarImpresora,
   eliminarImpresora,
+  obtenerImpresoraPorId,
 } = require("../controllers/impresoraController");
 
 const verificarToken = require("../middleware/auth.middleware");
 const { soloAdmin, adminOTecnico } = require("../middleware/rol.middleware");
+// ----------------------------------Obtener impresora por ID-------------------------------
+router.get("/:id", verificarToken, obtenerImpresoraPorId);
 
 // 🔒 LOGIN
 router.get("/", verificarToken, listarImpresoras);

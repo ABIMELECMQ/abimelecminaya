@@ -1,87 +1,37 @@
-<h2>Crear Orden de Servicio</h2>
+<h3>Crear Orden de Servicio</h3>
 
-<p *ngIf="error" style="color:red">{{ error }}</p>
+<label>Cliente</label>
+<input
+ type="text"
+  class="form-control"
+  [value]="cliente?.nombres + ' ' + cliente?.apellidos"
+  disabled
+/>
 
-<form (ngSubmit)="guardarOrden()">
+<label>Impresora</label>
+<input
+   type="text"
+  class="form-control"
+  [value]="impresora?.marca + ' ' + impresora?.modelo"
+  disabled
+/>
 
-  <!-- CLIENTE -->
-  <div>
-    <label>Cliente</label><br />
-    <input
-      type="text"
-      [value]="clienteInfo"
-      disabled
-    />
-  </div>
+<hr />
 
-  <br />
+<label>Motivo del cliente</label>
+<input
+  type="text"
+  [(ngModel)]="orden.motivo_cliente"
+  placeholder="Ej: No imprime"
+  required
+/>
 
-  <!-- IMPRESORA (FIJA) -->
-  <div>
-    <label>Impresora</label><br />
-    <input
-      type="text"
-      [value]="impresoraInfo"
-      disabled
-    />
-  </div>
+<label>Descripción de la falla</label>
+<textarea
+  [(ngModel)]="orden.descripcion_falla"
+  placeholder="Detalles técnicos observados"
+></textarea>
 
-  <br />
-
-  <!-- ESTADO -->
-  <div>
-    <label>Estado</label><br />
-    <select [(ngModel)]="orden.estado_id" name="estado_id">
-      <option *ngFor="let e of estados" [value]="e.id">
-        {{ e.nombre }}
-      </option>
-    </select>
-  </div>
-
-  <br />
-
-  <!-- TECNICO -->
-  <div>
-    <label>Técnico</label><br />
-    <select [(ngModel)]="orden.tecnico_id" name="tecnico_id">
-      <option value="">-- Seleccione técnico --</option>
-      <option *ngFor="let t of tecnicos" [value]="t.id">
-        {{ t.nombres }} {{ t.apellidos }}
-      </option>
-    </select>
-  </div>
-
-  <br />
-
-  <!-- MOTIVO CLIENTE -->
-  <div>
-    <label>Motivo del cliente</label><br />
-    <input
-      type="text"
-      [(ngModel)]="orden.motivo_cliente"
-      name="motivo_cliente"
-      placeholder="Ej: No imprime, hace ruido, etc."
-    />
-  </div>
-
-  <br />
-
-  <!-- DESCRIPCION FALLA -->
-  <div>
-    <label>Descripción de la falla</label><br />
-    <textarea
-      [(ngModel)]="orden.descripcion_falla"
-      name="descripcion_falla"
-      rows="4"
-      placeholder="Detalle técnico de la falla detectada"
-    ></textarea>
-  </div>
-
-  <br />
-
-  <!-- BOTON -->
-  <button type="submit">
-    Guardar Orden
-  </button>
-
-</form>
+<button (click)="guardarOrden()">
+  Guardar Orden
+</button>

@@ -8,56 +8,58 @@ import { ClienteFormComponent } from './components/cliente-form/cliente-form.com
 import { ImpresoraFormComponent } from './components/impresora-form/impresora-form.component';
 import { BuscarClienteComponent } from './components/buscar-cliente/buscar-cliente.component';
 import { OrdenFormComponent } from './components/orden-form/orden-form.component';
+import { OrdenesTallerComponent } from './components/ordenes-taller/ordenes-taller.component';
+
 
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
 
-  // 🔓 LOGIN
   { path: 'login', component: LoginComponent },
 
-  // 🔐 MENÚ PRINCIPAL
   {
     path: 'menu',
     component: MenuComponent,
-    canActivate: [authGuard]
-  },
-
-  // 🔐 BUSCAR CLIENTE
-  {
-    path: 'buscar-cliente',
-    component: BuscarClienteComponent,
-    canActivate: [authGuard]
-  },
-
-  // 🔐 CLIENTES
-  {
-    path: 'clientes',
     canActivate: [authGuard],
     children: [
-      { path: '', component: ClienteListComponent },
-      { path: 'nuevo', component: ClienteFormComponent }
+
+      // 🔁 REDIRECCIÓN POR DEFECTO
+      {
+        path: '',
+        redirectTo: 'ordenes/taller',
+        pathMatch: 'full'
+      },
+
+      {
+        path: 'buscar-cliente',
+        component: BuscarClienteComponent
+      },
+
+      {
+        path: 'clientes',
+        children: [
+          { path: '', component: ClienteListComponent },
+          { path: 'nuevo', component: ClienteFormComponent }
+        ]
+      },
+
+      {
+        path: 'impresoras/nueva',
+        component: ImpresoraFormComponent
+      },
+
+      {
+        path: 'orden/crear/:clienteId/:impresoraId',
+        component: OrdenFormComponent
+      },
+
+      {
+        path: 'ordenes/taller',
+        component: OrdenesTallerComponent
+      }
     ]
   },
 
-  // 🔐 IMPRESORAS
-  {
-    path: 'impresoras/nueva',
-    component: ImpresoraFormComponent,
-    canActivate: [authGuard]
-  },
-
-  // 🔐 CREAR ORDEN DE SERVICIO
-  {
-    path: 'orden/crear/:clienteId/:impresoraId',
-    component: OrdenFormComponent,
-    canActivate: [authGuard]
-  },
-
-  // 🚪 REDIRECCIÓN INICIAL
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-
-  // 🚫 CUALQUIER OTRA RUTA
   { path: '**', redirectTo: 'login' }
-
 ];

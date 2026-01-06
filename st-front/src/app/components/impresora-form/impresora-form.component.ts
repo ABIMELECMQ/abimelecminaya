@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-impresora-form',
@@ -10,76 +10,70 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   imports: [CommonModule, FormsModule],
   templateUrl: './impresora-form.component.html'
 })
-export class ImpresoraFormComponent implements OnInit {
+export class ImpresoraFormComponent {
 
-  clientes: any[] = []; // Lista de clientes
+  busqueda = '';
+  clientes: any[] = [];
+  clienteSeleccionado: any = null;
+
   marca = '';
   modelo = '';
   serie = '';
-  cliente_id: number | null = null;
   error = '';
 
-  private API_URL = 'http://localhost:3000/api/impresoras';
+  private API_IMPRESORAS = 'http://localhost:3000/api/impresoras';
+  private API_CLIENTES = 'http://localhost:3000/api/clientes/buscar';
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.cargarClientes(); // <-- carga clientes al iniciar el componente
-  }
-
-  // ===============================
-  // Método corregido para obtener array
-  // ===============================
-  cargarClientes() {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
-    this.http.get('http://localhost:3000/api/clientes', { headers }).subscribe({
-      next: (res: any) => {
-        if(res.success) {
-          this.clientes = res.data; // <-- array real de clientes
-        } else {
-          this.error = 'No se pudieron cargar los clientes';
-        }
-      },
-      error: () => this.error = 'Error al cargar clientes'
-    });
-  }
-
-  // ===============================
-  // Guardar impresora
-  // ===============================
-  guardar() {
-    if (!this.cliente_id) {
-      this.error = 'Seleccione un cliente';
+  buscarClientes() {
+    if (this.busqueda.length < 2) {
+      this.clientes = [];
       return;
     }
 
-    const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    });
+
+    this.http.get<any>(
+      `${this.API_CLIENTES}?texto=${this.busqueda}`,
+      { headers }
+    ).subscribe(res => {
+      this.clientes = res.data || [];
+    });
+  }
+
+  seleccionarCliente(cliente: any) {
+    this.clienteSeleccionado = cliente;
+    this.clientes = [];
+    this.busqueda = `${cliente.nombres} ${cliente.apellidos}`;
+  }
+
+  guardar() {
+    if (!this.clienteSeleccionado) {
+      this.error = 'Debe seleccionar un cliente';
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('token')}`
     });
 
     const body = {
       marca: this.marca,
       modelo: this.modelo,
       serie: this.serie,
-      cliente_id: this.cliente_id
+      cliente_id: this.clienteSeleccionado.id
     };
 
-    this.http.post(this.API_URL, body, { headers }).subscribe({
+    this.http.post(this.API_IMPRESORAS, body, { headers }).subscribe({
       next: () => {
         alert('Impresora registrada correctamente');
-        this.marca = '';
-        this.modelo = '';
-        this.serie = '';
-        this.cliente_id = null;
-        this.router.navigate(['/menu']); // Redirigir al menú
+        this.router.navigate(['/menu']);
       },
       error: () => this.error = 'Error al registrar impresora'
     });

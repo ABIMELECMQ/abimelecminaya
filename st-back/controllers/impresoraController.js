@@ -102,9 +102,37 @@ const eliminarImpresora = async (req, res) => {
   }
 };
 
+// ========== OBTENER IMPRESORA POR ID ==========
+const obtenerImpresoraPorId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const impresora = await Impresora.obtenerImpresoraPorId(id);
+
+    if (!impresora) {
+      return res.status(404).json({
+        success: false,
+        mensaje: "Impresora no encontrada",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: impresora,
+    });
+  } catch (error) {
+    console.error("ERROR OBTENER IMPRESORA:", error);
+    res.status(500).json({
+      success: false,
+      mensaje: "Error al obtener impresora",
+    });
+  }
+};
+
 module.exports = {
   listarImpresoras,
   crearImpresora,
   actualizarImpresora,
   eliminarImpresora,
+  obtenerImpresoraPorId,
 };

@@ -8,23 +8,13 @@ const {
   eliminarCliente,
   buscarClientesPorCoincidencia,
   buscarClientesConImpresoras,
+  obtenerClientePorId,
 } = require("../controllers/clienteController");
 
 const verificarToken = require("../middleware/auth.middleware");
 const { soloAdmin, adminOTecnico } = require("../middleware/rol.middleware");
 
-// 🔒 LOGIN OBLIGATORIO
-router.get("/", verificarToken, listarClientes);
-
-// 🔒 ADMIN y TECNICO
-router.post("/", verificarToken, adminOTecnico, crearCliente);
-
-router.put("/:id", verificarToken, adminOTecnico, actualizarCliente);
-
-// 🔒 SOLO ADMIN
-router.delete("/:id", verificarToken, soloAdmin, eliminarCliente);
-
-// 🔍 BÚSQUEDAS
+// 🔍 BÚSQUEDAS (SIEMPRE PRIMERO)
 router.get("/buscar", verificarToken, buscarClientesPorCoincidencia);
 
 router.get(
@@ -32,5 +22,18 @@ router.get(
   verificarToken,
   buscarClientesConImpresoras
 );
+
+// LISTAR
+router.get("/", verificarToken, listarClientes);
+
+// OBTENER POR ID esto siempre va al final
+router.get("/:id", verificarToken, obtenerClientePorId);
+
+// ADMIN y TECNICO
+router.post("/", verificarToken, adminOTecnico, crearCliente);
+router.put("/:id", verificarToken, adminOTecnico, actualizarCliente);
+
+// SOLO ADMIN
+router.delete("/:id", verificarToken, soloAdmin, eliminarCliente);
 
 module.exports = router;

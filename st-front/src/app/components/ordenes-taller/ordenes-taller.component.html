@@ -1,0 +1,33 @@
+<h2>Órdenes en Taller</h2>
+
+<table border="1" width="100%">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Cliente</th>
+      <th>Impresora</th>
+      <th>Estado</th>
+      <th *ngIf="rol === 'tecnico'">Cambiar estado</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let o of ordenes">
+      <td>{{ o.id }}</td>
+      <td>{{ o.cliente }}</td>
+      <td>{{ o.impresora }}</td>
+      <td>{{ o.estado }}</td>
+
+      <!-- SOLO TÉCNICO -->
+      <td *ngIf="rol === 'tecnico'">
+        <select (change)="cambiarEstado(o.id, $any($event.target).value)">
+          <option value="">-- Seleccionar --</option>
+          <option value="2">Diagnóstico</option>
+          <option value="3">Reparación</option>
+          <option value="4">Terminado</option>
+          <option value="5">Entregado</option>
+        </select>
+      </td>
+    </tr>
+  </tbody>
+</table>

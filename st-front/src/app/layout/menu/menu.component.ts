@@ -1,19 +1,34 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-menu',
+  templateUrl: './menu.component.html',
   standalone: true,
-  imports: [CommonModule, RouterModule],
-  templateUrl: './menu.component.html'
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule
+  ],
 })
-export class MenuComponent {
+export class MenuComponent implements OnInit {
+  rol = '';
 
-  constructor(private auth: AuthService) {}
+  ngOnInit(): void {
+    const usuario = localStorage.getItem('usuario');
+    if (usuario) {
+      this.rol = JSON.parse(usuario).rol;
+    }
+  }
+
+  constructor(private router: Router) {}
 
   logout() {
-    this.auth.logout();
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 }

@@ -1,25 +1,33 @@
-<h3>Buscar cliente</h3>
+<h2>Buscar cliente</h2>
 
 <input
   type="text"
   [(ngModel)]="query"
+  (keyup)="buscar()"
   placeholder="DNI, nombre o apellido"
 />
 
-<button (click)="buscar()">Buscar</button>
-
 <p *ngIf="error" style="color:red">{{ error }}</p>
 
+<!-- LISTA DE COINCIDENCIAS -->
 <div *ngFor="let c of clientes" class="card">
-  <h4>{{ c.nombres }} {{ c.apellidos }} ({{ c.dni }})</h4>
 
-  <ul>
+  <!-- CLICK AQUÍ -->
+  <h4
+    style="cursor:pointer; color:#1976d2"
+    (click)="seleccionarCliente(c)"
+  >
+    {{ c.nombres }} {{ c.apellidos }} ({{ c.dni }})
+  </h4>
+
+  <ul *ngIf="clienteSeleccionado?.id === c.id">
     <li *ngFor="let i of c.impresoras">
       {{ i.marca }} - {{ i.modelo }} | {{ i.serie }}
-      <button (click)="irACrearOrden(c.id, i.id)">
-  Crear orden
-</button>
 
+      <button (click)="crearOrden(c.id, i.id)">
+        Crear orden
+      </button>
     </li>
   </ul>
+
 </div>

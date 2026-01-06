@@ -1,14 +1,40 @@
 <h2>Menú Principal</h2>
 
 <nav>
-  <a routerLink="/clientes/nuevo">➕ Registrar Cliente</a>
-  <br><br>
-  <a routerLink="/impresoras/nueva">🖨️ Registrar Impresora</a>
-  <br><br>
-  <button (click)="logout()">Cerrar sesión</button>
- 
-  <button routerLink="/buscar-cliente">
-  Buscar cliente
-</button>
+  <ul>
+
+    <!-- 🔍 BUSCAR CLIENTE (ADMIN) -->
+    <li *ngIf="rol === 'admin'">
+      <a routerLink="/menu/buscar-cliente">Buscar cliente</a>
+    </li>
+
+    <!-- 👥 CLIENTES -->
+    <li *ngIf="rol === 'admin'">
+      <a routerLink="/menu/clientes">Clientes</a>
+    </li>
+
+    <!-- 🖨️ IMPRESORAS -->
+    <li *ngIf="rol === 'admin'">
+      <a routerLink="/menu/impresoras/nueva">Registrar Impresora</a>
+    </li>
+
+    <!-- 🔧 ÓRDENES EN TALLER (ADMIN + TECNICO) -->
+    <li *ngIf="rol === 'admin' || rol === 'tecnico'">
+      <a routerLink="/menu/ordenes/taller">Órdenes en Taller</a>
+    </li>
+
+    <!-- 🚪 SALIR -->
+    <li>
+      <button (click)="logout()">Cerrar sesión</button>
+    </li>
+
+  </ul>
 </nav>
+
+<hr>
+
+<router-outlet></router-outlet>
+
+
+
 

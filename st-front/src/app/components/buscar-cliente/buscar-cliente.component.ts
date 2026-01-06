@@ -12,9 +12,12 @@ import { Router } from '@angular/router';
 })
 export class BuscarClienteComponent {
 
-  query = '';
+  query: string = '';
   clientes: any[] = [];
-  error = '';
+  clienteSeleccionado: any = null;
+  error: string = '';
+
+  private API = 'http://localhost:3000/api/clientes/buscar-con-impresoras';
 
   constructor(
     private http: HttpClient,
@@ -22,26 +25,27 @@ export class BuscarClienteComponent {
   ) {}
 
   buscar() {
-    const token = localStorage.getItem('token');
+    // 🔒 Si ya hay cliente seleccionado, no seguir buscando
+    if (this.clienteSeleccionado) {
+      return;
+    }
 
-    if (!token) {
-      this.error = 'Sesión no válida';
+    if (this.query.trim().length < 2) {
+      this.clientes = [];
       return;
     }
 
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${localStorage.getItem('token')}`
     });
 
     this.http.get<any>(
-      `http://localhost:3000/api/clientes/buscar-con-impresoras?texto=${this.query}`,
+      `${this.API}?texto=${this.query}`,
       { headers }
     ).subscribe({
       next: (res) => {
-        console.log('RESPUESTA BACKEND:', res);
-
-        if (res.success && res.data.length > 0) {
-          this.clientes = res.data;
+        if (res.success) {
+          this.clientes = res.data || [];
           this.error = '';
         } else {
           this.clientes = [];
@@ -49,12 +53,25 @@ export class BuscarClienteComponent {
         }
       },
       error: () => {
-        this.error = 'Error al buscar cliente';
+        this.error = 'Error al buscar clientes';
+        this.clientes = [];
       }
     });
   }
 
-  irACrearOrden(clienteId: number, impresoraId: number) {
+  seleccionarCliente(cliente: any) {
+    this.clienteSeleccionado = cliente;
+    this.query = `${cliente.nombres} ${cliente.apellidos}`;
+    this.clientes = [cliente]; // muestra solo el seleccionado
+  }
+
+  cambiarCliente() {
+    this.clienteSeleccionado = null;
+    this.query = '';
+    this.clientes = [];
+  }
+
+  crearOrden(clienteId: number, impresoraId: number) {
     this.router.navigate([
       '/orden/crear',
       clienteId,
@@ -62,3 +79,4 @@ export class BuscarClienteComponent {
     ]);
   }
 }
+

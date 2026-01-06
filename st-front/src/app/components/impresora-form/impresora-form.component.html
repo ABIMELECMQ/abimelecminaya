@@ -1,34 +1,63 @@
 <h2>Registrar Impresora</h2>
 
-<div *ngIf="error" style="color:red;">{{ error }}</div>
+<p *ngIf="error" style="color:red">{{ error }}</p>
 
+<!-- BUSCAR CLIENTE -->
+<label>Buscar cliente</label>
+<input
+  type="text"
+  [(ngModel)]="busqueda"
+  (keyup)="buscarClientes()"
+  placeholder="DNI, nombre o apellido"
+/>
+
+<ul *ngIf="clientes.length > 0">
+  <li *ngFor="let c of clientes">
+    {{ c.nombres }} {{ c.apellidos }} ({{ c.dni }})
+    <button type="button" (click)="seleccionarCliente(c)">
+      Seleccionar
+    </button>
+  </li>
+</ul>
+
+<hr />
+
+<!-- CLIENTE SELECCIONADO -->
+<div *ngIf="clienteSeleccionado">
+  <strong>Cliente seleccionado:</strong><br />
+  {{ clienteSeleccionado.nombres }} {{ clienteSeleccionado.apellidos }}
+</div>
+
+<br />
+
+<!-- FORM IMPRESORA -->
 <form (ngSubmit)="guardar()">
 
-  <div>
-    <label>Cliente:</label>
-    <select [(ngModel)]="cliente_id" name="cliente">
-      <option [value]="null">--Seleccione un cliente--</option>
-      <option *ngFor="let c of clientes" [value]="c.id">
-        {{ c.nombres }} {{ c.apellidos }}
-      </option>
-    </select>
-  </div>
+  <input
+    type="text"
+    [(ngModel)]="marca"
+    name="marca"
+    placeholder="Marca"
+  />
 
-  <div>
-    <label>Marca:</label>
-    <input type="text" [(ngModel)]="marca" name="marca" />
-  </div>
+  <input
+    type="text"
+    [(ngModel)]="modelo"
+    name="modelo"
+    placeholder="Modelo"
+  />
 
-  <div>
-    <label>Modelo:</label>
-    <input type="text" [(ngModel)]="modelo" name="modelo" />
-  </div>
+  <input
+    type="text"
+    [(ngModel)]="serie"
+    name="serie"
+    placeholder="Serie"
+  />
 
-  <div>
-    <label>Serie:</label>
-    <input type="text" [(ngModel)]="serie" name="serie" />
-  </div>
+  <br /><br />
 
-  <button type="submit">Registrar Impresora</button>
+  <button type="submit" [disabled]="!clienteSeleccionado">
+    Registrar impresora
+  </button>
 
 </form>

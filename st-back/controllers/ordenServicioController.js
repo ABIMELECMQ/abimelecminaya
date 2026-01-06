@@ -135,9 +135,39 @@ const actualizarEstadoOrden = async (req, res) => {
   }
 };
 
+const listarOrdenesTaller = async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT o.id,
+             o.motivo_cliente,
+             o.estado_id,
+             e.nombre AS estado,
+             c.nombre AS cliente,
+             i.marca,
+             i.modelo
+      FROM orden_servicio o
+      INNER JOIN estado_orden e ON o.estado_id = e.id
+      INNER JOIN cliente c ON o.cliente_id = c.id
+      INNER JOIN impresora i ON o.impresoras_id = i.id
+      ORDER BY o.id DESC
+    `);
+
+    res.json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   crearOrden,
   listarOrdenes,
   obtenerOrdenPorId,
   actualizarEstadoOrden,
+  listarOrdenesTaller,
 };

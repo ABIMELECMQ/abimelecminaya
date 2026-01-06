@@ -1,10 +1,16 @@
 const pool = require("../config/database");
 
-// LISTAR TODAS
+// ========== LISTAR IMPRESORAS ==========
 const listarImpresoras = async () => {
   const [rows] = await pool.query(`
-    SELECT i.id, i.marca, i.modelo, i.serie, i.creado_en,
-           c.id AS cliente_id, c.nombre AS cliente
+    SELECT 
+      i.id,
+      i.marca,
+      i.modelo,
+      i.serie,
+      i.creado_en,
+      c.id AS cliente_id,
+      CONCAT(c.nombres, ' ', c.apellidos) AS cliente
     FROM impresora i
     INNER JOIN cliente c ON i.cliente_id = c.id
     ORDER BY i.id DESC
@@ -12,7 +18,7 @@ const listarImpresoras = async () => {
   return rows;
 };
 
-// CREAR IMPRESORA
+// ========== CREAR IMPRESORA ==========
 const crearImpresora = async ({ marca, modelo, serie, cliente_id }) => {
   const [result] = await pool.query(
     `INSERT INTO impresora (marca, modelo, serie, cliente_id)
@@ -22,7 +28,7 @@ const crearImpresora = async ({ marca, modelo, serie, cliente_id }) => {
   return result.insertId;
 };
 
-// ACTUALIZAR IMPRESORA
+// ========== ACTUALIZAR IMPRESORA ==========
 const actualizarImpresora = async (
   id,
   { marca, modelo, serie, cliente_id }
@@ -36,10 +42,19 @@ const actualizarImpresora = async (
   return result.affectedRows;
 };
 
-// ELIMINAR
+// ========== ELIMINAR IMPRESORA ==========
 const eliminarImpresora = async (id) => {
   const [result] = await pool.query("DELETE FROM impresora WHERE id = ?", [id]);
   return result.affectedRows;
+};
+
+// ========== OBTENER IMPRESORA POR ID ==========
+const obtenerImpresoraPorId = async (id) => {
+  const [rows] = await pool.query(
+    "SELECT id, marca, modelo, serie FROM impresora WHERE id = ?",
+    [id]
+  );
+  return rows[0];
 };
 
 module.exports = {
@@ -47,4 +62,5 @@ module.exports = {
   crearImpresora,
   actualizarImpresora,
   eliminarImpresora,
+  obtenerImpresoraPorId,
 };
