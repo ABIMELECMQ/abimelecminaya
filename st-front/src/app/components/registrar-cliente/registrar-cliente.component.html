@@ -1,0 +1,34 @@
+<h2>Registrar nuevo cliente</h2>
+
+<div *ngIf="error" style="color:red">{{ error }}</div>
+
+<form (ngSubmit)="guardarCliente()">
+  <div>
+    <label>DNI*</label>
+    <input type="text" [(ngModel)]="dni" name="dni" required />
+  </div>
+
+  <div>
+    <label>Nombres*</label>
+    <input type="text" [(ngModel)]="nombres" name="nombres" required />
+  </div>
+
+  <div>
+    <label>Apellidos</label>
+    <input type="text" [(ngModel)]="apellidos" name="apellidos" />
+  </div>
+
+  <div>
+    <label>Teléfono</label>
+    <input type="text" [(ngModel)]="telefono" name="telefono" />
+  </div>
+
+  <div>
+    <label>Dirección</label>
+    <input type="text" [(ngModel)]="direccion" name="direccion" />
+  </div>
+
+  <button type="submit" [disabled]="cargando">
+    {{ cargando ? 'Guardando...' : 'Guardar Cliente' }}
+  </button>
+</form>

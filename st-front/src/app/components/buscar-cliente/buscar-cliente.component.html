@@ -9,10 +9,10 @@
 
 <p *ngIf="error" style="color:red">{{ error }}</p>
 
-<!-- LISTA DE COINCIDENCIAS -->
+<!-- RESULTADOS -->
 <div *ngFor="let c of clientes" class="card">
 
-  <!-- CLICK AQUÍ -->
+  <!-- CLIENTE -->
   <h4
     style="cursor:pointer; color:#1976d2"
     (click)="seleccionarCliente(c)"
@@ -20,14 +20,32 @@
     {{ c.nombres }} {{ c.apellidos }} ({{ c.dni }})
   </h4>
 
+  <!-- IMPRESORAS DEL CLIENTE SELECCIONADO -->
   <ul *ngIf="clienteSeleccionado?.id === c.id">
     <li *ngFor="let i of c.impresoras">
       {{ i.marca }} - {{ i.modelo }} | {{ i.serie }}
 
       <button (click)="crearOrden(c.id, i.id)">
-        Crear orden
+        🧾 Crear orden
       </button>
     </li>
   </ul>
 
 </div>
+
+<!-- ACCIONES CUANDO YA HAY CLIENTE SELECCIONADO -->
+<div *ngIf="clienteSeleccionado" style="margin-top: 15px">
+  <button (click)="continuarRegistrarImpresora()">
+    ➕ Registrar nueva impresora
+  </button>
+</div>
+
+<!-- SIN RESULTADOS -->
+<!-- SIN RESULTADOS -->
+<div *ngIf="clientes.length === 0 && query.length >= 2">
+  <p>No se encontró el cliente</p>
+  <button (click)="irRegistrarCliente()">
+    ➕ Registrar nuevo cliente
+  </button>
+</div>
+

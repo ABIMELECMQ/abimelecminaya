@@ -17,8 +17,13 @@
   <label>Dirección</label>
   <input type="text" [(ngModel)]="direccion" name="direccion" />
 
-  <button type="submit">Guardar</button>
-
+  
   <p *ngIf="error" style="color:red">{{ error }}</p>
+
+  <button type="button" (click)="guardarCliente()">
+  Guardar Cliente y Registrar Impresora
+</button>
+
+
 
 </form>

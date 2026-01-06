@@ -26,8 +26,8 @@ export class ClienteFormComponent {
     private router: Router
   ) {}
 
+  // Método antiguo que sigue funcionando
   guardar() {
-
     const token = localStorage.getItem('token');
 
     const headers = new HttpHeaders({
@@ -51,4 +51,43 @@ export class ClienteFormComponent {
       }
     });
   }
+
+  // Nuevo método profesional
+  guardarCliente() {
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${localStorage.getItem('token')}`
+  });
+
+  const body = {
+    dni: this.dni,
+    nombres: this.nombres,
+    apellidos: this.apellidos,
+    telefono: this.telefono,
+    direccion: this.direccion
+  };
+
+  // 🔹 URL correcta según tu backend
+  this.http.post<any>('http://localhost:3000/api/clientes', body, { headers }).subscribe({
+    next: (res) => {
+      if (res.success) {
+        // Guardar cliente recién creado en localStorage
+        localStorage.setItem('clienteSeleccionado', JSON.stringify(res));
+
+        // Mostrar mensaje de éxito
+        alert('Cliente registrado correctamente');
+
+        // Redirigir automáticamente al formulario de registrar impresora
+        const ruta = localStorage.getItem('rutaRetorno') || '/menu/impresoras/nueva';
+        this.router.navigate([ruta]);
+      } else {
+        this.error = res.mensaje || 'Error al registrar cliente';
+      }
+    },
+    error: (err) => {
+      this.error = err.error?.mensaje || 'Error interno del servidor';
+    }
+  });
+}
+
+  
 }

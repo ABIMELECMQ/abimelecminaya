@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   imports: [CommonModule, FormsModule],
   templateUrl: './impresora-form.component.html'
 })
-export class ImpresoraFormComponent {
+export class ImpresoraFormComponent implements OnInit {
 
   busqueda = '';
   clientes: any[] = [];
@@ -29,7 +29,18 @@ export class ImpresoraFormComponent {
     private router: Router
   ) {}
 
+  ngOnInit(): void {
+    const clienteGuardado = localStorage.getItem('clienteSeleccionado');
+    if (clienteGuardado) {
+      this.clienteSeleccionado = JSON.parse(clienteGuardado);
+      this.busqueda = `${this.clienteSeleccionado.nombres} ${this.clienteSeleccionado.apellidos}`;
+      this.clientes = [];
+    }
+  }
+
   buscarClientes() {
+    if (this.clienteSeleccionado) return;
+
     if (this.busqueda.length < 2) {
       this.clientes = [];
       return;
@@ -73,9 +84,11 @@ export class ImpresoraFormComponent {
     this.http.post(this.API_IMPRESORAS, body, { headers }).subscribe({
       next: () => {
         alert('Impresora registrada correctamente');
+        localStorage.removeItem('clienteSeleccionado');
         this.router.navigate(['/menu']);
       },
       error: () => this.error = 'Error al registrar impresora'
     });
   }
 }
+

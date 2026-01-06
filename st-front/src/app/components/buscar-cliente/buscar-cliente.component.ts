@@ -78,5 +78,23 @@ export class BuscarClienteComponent {
       impresoraId
     ]);
   }
+
+  continuarRegistrarImpresora() {
+  if (!this.clienteSeleccionado) {
+    return;
+  }
+
+  localStorage.setItem(
+    'clienteSeleccionado',
+    JSON.stringify(this.clienteSeleccionado)
+  );
+
+  this.router.navigate(['/menu/impresoras/nueva']);
 }
 
+irRegistrarCliente() {
+  // Guardar la ruta a la que debe ir después de registrar cliente
+  localStorage.setItem('rutaRetorno', '/menu/impresoras/nueva');
+  this.router.navigate(['/menu/clientes/nuevo']);
+}
+}
